@@ -50,10 +50,36 @@ Una vez el archivo termina de ejecutarse tendremos algo similar en la hoja data 
 
 ### Preparacion de script
 
+#### Preparando datos
+
+1. Abrimos el documento "data.xlsx",el cual tendra 2 hojas una llamada parametros y otra data
+2. Accedemos a la hoja parametros que tiene lo siguiente:
+3. ![](picture/parametrosScript.png)
+4. Escribimos las correspondientes propiedades que necesita el servicio para realizar la peticion
+5. Acedemos a la hoja data,en la cual debemos copiar o escribir en la fila numero 1 el tipo de parametro y en la fila numero 2 escribimos el nombre del parametro los tipos de parametros pueden se los siguientes: `Header,Body,Path,Query,Code o Message`,como se muestra a continuacion:
+6. ![](picture/cabezeraScript.png)
+7. Lo siguientes es copiar los respectivos datos por fila de cada uno de los parametro que genero la herramienta "generador.xmls",como se muestra a continuacion:
+8. ![](picture/datosScript.png)
+9. Para finalizar revisamos la ultima columna la cual debe tener en la primera fila el valor de Message y los correspondientes datos,como se muestra a continuacion:
+10. ![](picture/messageScript.png)
+11. Por ultimo guardamos el documento.
+
+#### Configurando script
+
+1. Una vez abierto el Jmeter,procedemos abrir el proyecto Generic v3.jmx o Generic v5.jmx,correspondiente a la version del jmeter
+2. accedemos al componente Plan de pruebas,que esta ubicado en el menu que esta parte izquierda de JMeter,una vez hay vamos a la parte inferior donde dice "Añadir directorio o jar al classpath",damos click en el boton Navegar,buscamos el documento `JmeterExcel.jar`,una vez selecionado debe verse de la siguiente manera: ![](picture/jarScript.png)
+3. Lo siguiente es acceder al componente Grupo de hilos,en la opcion que dice "contador del bucle",pones el numero de filas que tiene el documento "data.xlsx", en la hoja de data y le restamos 2 `Ejemplo: Hay un total de 50 filas en el documento,en la opcion de contador bucles ponemos 48`,Debe ser similar a lo siguiente:![](picture/hilosScript.png)
+4. Lo siguiente es acceder a las "variables definidas",configurar la varible data con la ruta absoluta del documento "data.xlsx" `Ejemplo de una ruta absoluta "D:\\Jhony\\jmeter Script\\data.xlsx"`,debe verse similar a lo siguiente: ![](picture/variableScript.png)
+5. por ultimo accedemos a arbol de resultado,corremos el script y vemos los correspondientes resultados de la prueba,como se muestra a continuacion:![](picture/resultadoScript.png)
+
+#### Configurando archivo csv
+1. Para configurar un archivo de datos csv,en el componente arbol de resultados,en la opcion navegar damos click,selecionamos una ruta del disco y llamamos el archivo `resultados.csv`,como se muestra a continuacion:![](picture/csvScript.png)
+> Nota: si desea cambiar el nombre del archivo csv,debe poner el mismo nombre que puso en el archivo en el componente guardar datos de respuesta en la opcion que dice `prefijo de nombre de archivo`
+
 
 ### Documentacion Api JmeterExcel.jar
 
-#### Class Workm  
+#### Class Work
 
 ###### Constructor
 
