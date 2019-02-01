@@ -9,10 +9,18 @@ Estas herramientas muy sencilla pueden ayudarnos a la automatización de pruebas
 
 1. Indice que corresponde al contador de la propiedades `Ejemplo: 1,3,10`
 2. Nombre del parametro `Ejemplo: Name,Apellido,Version`
-3. Valor de la propiedad que es asignado cuando la peticion es valida
+3. Valor de la propiedad que es asignado cuando la peticion es valida `Ejemplo: BBS,es_CO`
 4. Valores que puede tomar una propiedad,solo aplica para tipos de dato array cada valor es separado por coma  `Ejemplo: CC,CE,NI,TI`
+5. Valor que corresponde al tamaño maximo de la propiedad un numero entero,si no tiene tamaño maximo dejar campo vacio `Ejemplo: 25,45,39` 
+6. Valor que corresponden la propiedad de obligatoriedad de un campo si aplica se escribe `X` si no se deja el campo vacio
+7.  Valores que corresponde al tipo de dato de la propiedad puede ser: `String,Integet,Number,Boolean,Date-time,Array` 
+8.  Valores que corresponde al dato invalido simpre y cuando sea un tipo de dato array y tenga diferentes valores posibles
+9.  Valores que corresponden al tipo de propiedad que puede ser: `Header,Body,Query,Path`
 
+![](picture/criterios.png)
 
+1. Contador de numero de propiedades y numero de criterios a evaluar,toma en cuenta los indeces para realizar esta operacion
+2. s
 
 ### Instalacion de herramientas
 

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="3.1" jmeter="3.1 r1770033">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Plan de Pruebas" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables definidas por el Usuario" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath">D:\Jhony\jmeter Script\JmeterExcel.jar</stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Grupo de Hilos" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Controlador Bucle" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">5</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1547137823000</longProp>
+        <longProp name="ThreadGroup.end_time">1547137823000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables definidas por el Usuario" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="data" elementType="Argument">
+              <stringProp name="Argument.name">data</stringProp>
+              <stringProp name="Argument.value">D:\\Jhony\\jmeter Script\\data.xlsx</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="i" elementType="Argument">
+              <stringProp name="Argument.name">i</stringProp>
+              <stringProp name="Argument.value">2</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Petición HTTP" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables definidas por el Usuario" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${IP}</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">${Protocol}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">${Ruta}</stringProp>
+          <stringProp name="HTTPSampler.method">${Method}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Gestor de Cabecera HTTP" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <stringProp name="cacheKey"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import org.apache.jmeter.threads.JMeterVariables;
+import org.apache.jmeter.protocol.http.control.Header;
+import org.jmeter.excel.*;
+
+log.info(&quot;inicio&quot;);
+
+String ruta = vars.get(&quot;data&quot;);
+
+Work work = new Work(ruta);
+        
+ArrayList&lt;Parametro&gt; lasPropiedades = work.getSheetParametros().getListPropiedades();
+        
+for (Parametro parametro:lasPropiedades) {
+   vars.put(parametro.getName(), parametro.getValue());
+   log.info(parametro.getName());
+}
+
+work.close();</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey"></stringProp>
+            <stringProp name="script">import org.apache.jmeter.threads.JMeterVariables;
+import org.apache.jmeter.protocol.http.control.Header
+import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy;
+import org.jmeter.excel.*;
+
+
+log.info(&quot;inicio&quot;);
+
+String ruta = vars.get(&quot;data&quot;);
+String link = vars.get(&quot;Ruta&quot;);
+String method = vars.get(&quot;Method&quot;);
+String indice = vars.get(&quot;i&quot;);
+
+int num = Integer.parseInt(indice);
+
+Work work = new Work(ruta);
+
+ArrayList&lt;Parametro&gt; list = work.getSheetDatos().getListParametrosHeader(num);
+
+//Agregar Header
+log.info(&quot;Cargando header&quot;);
+for (Parametro parametro:list) {
+   vars.put(parametro.getName(), parametro.getValue());   
+   sampler.getHeaderManager().removeHeaderNamed(parametro.getName());
+   sampler.getHeaderManager().add(new Header(parametro.getName(),vars.get(parametro.getName())));
+}
+log.info(&quot;Terminando header&quot;);
+//Agregar Path
+log.info(&quot;Cargando path&quot;);
+list = work.getSheetDatos().getListParametrosPath(num);
+if(list.size()!=0){
+	String path = &quot;/&quot;;
+	for (Parametro parametro:list) {
+	   path = path + parametro.getValue()+&quot;/&quot;;
+	}
+	path = path.substring(0,(path.length()-1));
+	link = link+path;
+	vars.put(&quot;Ruta&quot;,link);
+}
+log.info(&quot;Terminando Path&quot;);
+//Agregando Query
+log.info(&quot;Cargando Query&quot;);
+list = work.getSheetDatos().getListParametrosQuery(num);
+if(list.size()!=0 &amp;&amp; method.equals(&quot;GET&quot;)){
+	for (Parametro parametro:list) {
+	   sampler.addArgument(parametro.getName(),parametro.getValue());
+	}
+}
+log.info(&quot;Terminando Query&quot;);
+//Agregando Body
+log.info(&quot;Cargando Body&quot;);
+list = work.getSheetDatos().getListParametrosBody(num);
+if(list.size()!=0 &amp;&amp; !method.equals(&quot;GET&quot;)){
+	sampler.addNonEncodedArgument(&quot;&quot;,list.get(0).getValue(),&quot;&quot;);
+}
+log.info(&quot;Terminando Body&quot;);
+
+num = num+1;
+vars.put(&quot;i&quot;,num.toString());
+work.close();
+
+//sampler.addNonEncodedArgument(&quot;&quot;,&quot;{ data: {\&quot;title\&quot;: \&quot;venkatachalam\&quot;, \&quot;body\&quot;: \&quot;Venkata\&quot;, \&quot;userId\&quot;: 3} }&quot;,&quot;&quot;);
+//sampler.addArgument(&quot;name&quot;, &quot;jhony&quot;);
+//sampler.addArgument(&quot;apellido&quot;,&quot;Sarria&quot;);
+//sampler.addArgument(&quot;Salazar&quot;, &quot;Gomez&quot;);</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Ver Árbol de Resultados" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>true</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>true</responseData>
+              <samplerData>true</samplerData>
+              <xml>true</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>true</responseHeaders>
+              <requestHeaders>true</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <fileName>true</fileName>
+              <hostname>true</hostname>
+              <threadCounts>true</threadCounts>
+              <sampleCount>true</sampleCount>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename">D:\Jhony\jmeter Script\resultados.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Guardar respuestas en archivo" enabled="true">
+          <stringProp name="FileSaver.filename">resultados</stringProp>
+          <boolProp name="FileSaver.errorsonly">true</boolProp>
+          <boolProp name="FileSaver.skipautonumber">false</boolProp>
+          <boolProp name="FileSaver.skipsuffix">false</boolProp>
+          <boolProp name="FileSaver.successonly">true</boolProp>
+          <boolProp name="FileSaver.addTimstamp">true</boolProp>
+        </ResultSaver>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
