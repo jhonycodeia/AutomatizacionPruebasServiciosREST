@@ -1,9 +1,14 @@
-``# Automatizacion-pruebas-servicios-REST
+# Automatizacion-pruebas-servicios-REST
 Estas herramientas muy sencilla pueden ayudarnos a la automatización de pruebas de Web Servicies REST Utilizando la herramienta JMETER 3.1 o 5.0
 
 [TOC]
 
 ### Preparación de data
+
+Antes que nada para iniciar la preparacion de datos para las pruebas se debe abrir el documento "Generador.xmls",en el cual se encuentras 2 hojas,condiciones la cual es donde se configurar los parametros y la hoja data,donde se escribira los datos para las pruebas
+> Nota: para que no haya inconvenientes a la hora de generar la data la hoja data,siempre debe estar limpia sin datos,preferiblemente eliminar todas las filas que tengan datos o algun style
+
+Una vez abierto el documento en la hoja condiciones nos encontraremos con 2 tablas una para los parametros y otra para los criterion que se explicara que se debe hacer a continuacion:
 
 ![](picture/propiedades.png)
 
@@ -29,6 +34,11 @@ Estas herramientas muy sencilla pueden ayudarnos a la automatización de pruebas
 8. Corresponde a la opcion si se desea generar la data para ese criterio puede ser: `Aplica o No Aplica`
 9. Corresponde al boton que una vez realizado todos los pasos anteriores,se genera la correspondiente data para las pruebas
 
+Una vez el archivo termina de ejecutarse tendremos algo similar en la hoja data del libro como lo siguiente:
+
+![](picture/dataGenerada.png)
+
+
 ### Instalacion de herramientas
 
 #### Jmeter
@@ -37,7 +47,6 @@ Estas herramientas muy sencilla pueden ayudarnos a la automatización de pruebas
 2.  Descargar la herramienta tika-app.jar, [Dowload](https://www-us.apache.org/dist/tika/)
 3.  Una vez descargado las herramienta en la carpeta origen del jmeter mover el archivo `tika-app.jar` en la ruta `Jmeter/lib/`
 4.  Ejecutar el archivo `Jmeter/bin/ApacheJMeter.jar`
-
 
 
 
