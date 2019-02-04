@@ -76,6 +76,15 @@ Una vez el archivo termina de ejecutarse tendremos algo similar en la hoja data 
 1. Para configurar un archivo de datos csv,en el componente arbol de resultados,en la opcion navegar damos click,selecionamos una ruta del disco y llamamos el archivo `resultados.csv`,como se muestra a continuacion:![](picture/csvScript.png)
 > Nota: si desea cambiar el nombre del archivo csv,debe poner el mismo nombre que puso en el archivo en el componente guardar datos de respuesta en la opcion que dice `prefijo de nombre de archivo`
 
+### Documentacion Generados
+
+```
+ToJsonArray(Range header;Range body)
+```
+> Metodo que con 2 parametros construye el json de la peticion,recibe el parametro header que corresponde a un rango de celdas con los valores de la Keys,tambien recibe un 2 parametro con los valores que corresponde a los values `Ejemplo =ToJsonArray(A1:D1;A3:D3)`
+
+> Nota:Deben tomar en cuenta el tipo de celda para la construcion del json,debido a que el algoritmo interpreta los tipo de dato que tiene la celda para la costruccion del json,ademas si el algoritmo llega a encontra celdas del keys con el mismo nombre de la propiedad los construye como un Array con los distintos valores del segundo argumento
+![](picture/jsonScript.png)
 
 ### Documentacion Api JmeterExcel.jar
 
