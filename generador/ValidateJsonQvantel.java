@@ -26,7 +26,7 @@ public class ValidateJsonQvantel {
         try {
 
             JSONObject json = new JSONObject(text);
-            JSONArray jsonArray = new JSONArray(cleanMedia(jsonGet(text, key).toString().toString()).toString());
+            JSONArray jsonArray = new JSONArray(cleanMedia(jsonGet(text, key).toString()).toString());
 
             json.put(key, jsonArray);
 
@@ -38,9 +38,13 @@ public class ValidateJsonQvantel {
         return value;
     }
 
-    public static Object cleanMedia(String text) throws Exception {
+    private static Object cleanMedia(String text) throws Exception {
 
         Object value = "";
+        boolean hayFijo = false;
+        boolean hayMobile = false;
+        int indexF = 0;
+        int indexM = 0;
 
         try {
             JSONArray newArray = new JSONArray();
@@ -52,11 +56,20 @@ public class ValidateJsonQvantel {
                     Object type = jsonGet(array.get(i).toString(), "medium.number-type");
                     if (type == null) {
                         newArray.put(array.get(i));
-                    } else if (type.toString().equalsIgnoreCase(TYPE_MOBILE)
-                            || type.toString().equalsIgnoreCase(TYPE_FIJO)) {
-                        newArray.put(array.get(i));
+                    } else if (type.toString().equalsIgnoreCase(TYPE_MOBILE)) {
+                        hayMobile = true;
+                        indexM = i;
+                    } else if (type.toString().equalsIgnoreCase(TYPE_FIJO)) {
+                        hayFijo = true;
+                        indexF = i;
                     }
                 }
+            }
+
+            if (hayFijo && hayMobile || hayMobile && !hayFijo) {
+                newArray.put(array.get(indexM));
+            } else if (hayFijo) {
+                newArray.put(array.get(indexF));
             }
 
             value = newArray.toString();
@@ -66,19 +79,54 @@ public class ValidateJsonQvantel {
         }
         return value;
     }
+    
+    public static Object jsonArray(String text, String key) throws Exception {
+        return jsonValue(text,key,true);
+    }
+    
+    public static Object jsonGet(String text, String key) throws Exception {
+        return jsonValue(text,key,false);
+    }
+    
+    private static Object jsonValue(String text, String key,boolean isArray) throws Exception {
+        try {
+            if (key.contains(".")) {
 
-    public static Object arrayGet(String text, String key) throws Exception {
+                text = valueGet(text, key.substring(0, key.indexOf("."))).toString();
+                key = key.substring(key.indexOf(".") + 1);
+
+                if (text.charAt(0) == '[') {
+                    return arrayGet(text, key,isArray);
+                } else {
+                    return jsonValue(text, key,false);
+                }
+            }
+            return valueGet(text, key);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private static Object arrayGet(String text, String key,boolean isArray) throws Exception {
 
         Object value = null;
 
         try {
             JSONArray array = new JSONArray(text);
+            JSONArray newArray = new JSONArray();
 
             for (int i = 0; i < array.length(); i++) {
                 Object item = jsonGet(array.get(i).toString(), key);
                 if (item != null) {
+                    newArray.put(item);
                     value = item;
+                    if(!isArray){
+                        break;
+                    }
                 }
+            }
+            if(isArray){
+                value = newArray.toString();
             }
 
         } catch (Exception e) {
@@ -87,26 +135,7 @@ public class ValidateJsonQvantel {
         }
         return value;
     }
-
-    public static Object jsonGet(String text, String key) throws Exception {
-        try {
-            if (key.contains(".")) {
-
-                text = valueGet(text, key.substring(0, key.indexOf("."))).toString();
-                key = key.substring(key.indexOf(".") + 1);
-
-                if (text.charAt(0) == '[') {
-                    return arrayGet(text, key);
-                } else {
-                    return jsonGet(text, key);
-                }
-            }
-            return valueGet(text, key);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
+     
     private static Object valueGet(String text, String key) throws Exception {
 
         Object value = null;
