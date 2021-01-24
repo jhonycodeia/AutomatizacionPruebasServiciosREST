@@ -2,6 +2,7 @@ package co.com.tigo.modelo;
 
 import co.com.tigo.modelo.IncompleteDataDTO;
 import java.lang.reflect.Method;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -79,16 +80,64 @@ public class ValidateJsonQvantel {
         }
         return value;
     }
-    
+
     public static Object jsonArray(String text, String key) throws Exception {
-        return jsonValue(text,key,true);
+        return jsonValue(text, key, true, null);
     }
-    
+
     public static Object jsonGet(String text, String key) throws Exception {
-        return jsonValue(text,key,false);
+        return jsonValue(text, key, false, null);
+    }
+
+    public static Object jsonGetCondition(String text, String key, List<JsonCondition> conditions) throws Exception {
+        return jsonValue(text, key, false, conditions);
     }
     
-    private static Object jsonValue(String text, String key,boolean isArray) throws Exception {
+    public static Object jsonGetConditions(String text, String key, List<JsonCondition> conditions) throws Exception {
+        return jsonValue(text, key, true, conditions);
+    }
+
+    private static Object arrayGetCondition(String text, String key, List<JsonCondition> conditions, boolean isArray) throws Exception {
+
+        Object value = null;
+
+        try {
+            JSONArray array = new JSONArray(text);
+            JSONArray newArray = new JSONArray();
+
+            for (int i = 0; i < array.length(); i++) {
+                Object item = jsonGet(array.get(i).toString(), key);
+                if (item != null) {
+                    if (validaCondition(array.get(i).toString(), conditions)) {
+                        newArray.put(item);
+                        value = item;
+                        if (!isArray) {
+                            break;
+                        }
+                    }
+                }
+            }
+            if (isArray) {
+                value = newArray.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error " + e.getMessage());
+        }
+        return value;
+    }
+
+    private static boolean validaCondition(String json, List<JsonCondition> conditions) throws Exception {
+        for (JsonCondition condition : conditions) {
+            Object itemCondition = jsonGet(json, condition.getKey());
+            if (itemCondition != null && !itemCondition.toString().equalsIgnoreCase(condition.getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static Object jsonValue(String text, String key, boolean isArray, List<JsonCondition> conditions) throws Exception {
         try {
             if (key.contains(".")) {
 
@@ -96,9 +145,14 @@ public class ValidateJsonQvantel {
                 key = key.substring(key.indexOf(".") + 1);
 
                 if (text.charAt(0) == '[') {
-                    return arrayGet(text, key,isArray);
+                    if (conditions != null) {
+                        return arrayGetCondition(text, key, conditions,isArray);
+                    } else {
+                        return arrayGet(text, key, isArray);
+                    }
+
                 } else {
-                    return jsonValue(text, key,false);
+                    return jsonValue(text, key, false, null);
                 }
             }
             return valueGet(text, key);
@@ -106,8 +160,8 @@ public class ValidateJsonQvantel {
             return null;
         }
     }
-    
-    private static Object arrayGet(String text, String key,boolean isArray) throws Exception {
+
+    private static Object arrayGet(String text, String key, boolean isArray) throws Exception {
 
         Object value = null;
 
@@ -120,12 +174,12 @@ public class ValidateJsonQvantel {
                 if (item != null) {
                     newArray.put(item);
                     value = item;
-                    if(!isArray){
+                    if (!isArray) {
                         break;
                     }
                 }
             }
-            if(isArray){
+            if (isArray) {
                 value = newArray.toString();
             }
 
@@ -135,7 +189,7 @@ public class ValidateJsonQvantel {
         }
         return value;
     }
-     
+
     private static Object valueGet(String text, String key) throws Exception {
 
         Object value = null;
