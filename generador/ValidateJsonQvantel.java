@@ -4,6 +4,7 @@ import co.com.tigo.modelo.IncompleteDataDTO;
 import java.lang.reflect.Method;
 import java.util.List;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /*
@@ -97,7 +98,66 @@ public class ValidateJsonQvantel {
         return jsonValue(text, key, true, conditions);
     }
 
-    private static Object arrayGetCondition(String text, String key, List<JsonCondition> conditions, boolean isArray) throws Exception {
+    private static Object jsonValue(String text, String key, boolean isArray, List<JsonCondition> conditions) throws Exception {
+        try {
+            if (key.contains(".")) {
+
+                text = valueGet(text, key.substring(0, key.indexOf("."))).toString();
+                key = key.substring(key.indexOf(".") + 1);
+
+                if (text.charAt(0) == '[') {
+                    return arrayGet(text, key, isArray, conditions);
+                } else {
+                    return jsonValue(text, key, false, null);
+                }
+            }
+            return valueGet(text, key);
+        } catch (Exception e) {            
+            return null;
+        }
+    }
+
+    private static Object getKeyCondition(String json, String key) throws Exception {
+        Object item = null;
+        try {
+            item = jsonGet(json, key);
+
+            if (item == null) {
+                return getKeyCondition(json, key.substring(key.indexOf(".") + 1));
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+        return item;
+    }
+
+    private static boolean validaCondition(String json, List<JsonCondition> conditions) throws Exception {
+        for (JsonCondition condition : conditions) {
+            Object itemCondition = getKeyCondition(json, condition.getKey());
+            if (itemCondition != null) {
+                if (condition.getValues() != null) {
+                    boolean isOption = true;
+                    for (String value : condition.getValues()) {
+                        if (!itemCondition.toString().equalsIgnoreCase(value)) {
+                            isOption = false;
+                        }
+                    }
+
+                    if (isOption) {
+                        return false;
+                    }
+
+                } else if (condition.getValue() != null && !itemCondition.toString().equalsIgnoreCase(condition.getValue())) {
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
+
+    private static Object arrayGet(String text, String key, boolean isArray, List<JsonCondition> conditions) throws Exception {
 
         Object value = null;
 
@@ -108,7 +168,15 @@ public class ValidateJsonQvantel {
             for (int i = 0; i < array.length(); i++) {
                 Object item = jsonGet(array.get(i).toString(), key);
                 if (item != null) {
-                    if (validaCondition(array.get(i).toString(), conditions)) {
+                    if (conditions != null) {
+                        if (validaCondition(array.get(i).toString(), conditions)) {
+                            newArray.put(item);
+                            value = item;
+                            if (!isArray) {
+                                break;
+                            }
+                        }
+                    } else {
                         newArray.put(item);
                         value = item;
                         if (!isArray) {
@@ -120,102 +188,9 @@ public class ValidateJsonQvantel {
             if (isArray) {
                 value = newArray.toString();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error " + e.getMessage());
-        }
-        return value;
-    }
-
-    private static Object getKeyCondition(String json, String key) {
-        Object item = null;
-        try {
-            item = jsonGet(json, key);
-
-            if (item == null) {
-                return getKeyCondition(json, key.substring(key.indexOf(".") + 1));
-            }
 
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return item;
-    }
-
-    private static boolean validaCondition(String json, List<JsonCondition> conditions) throws Exception {
-        for (JsonCondition condition : conditions) {
-            Object itemCondition = getKeyCondition(json, condition.getKey());
-            if (itemCondition != null) {
-                if(condition.getValues()!=null){
-                    boolean isOption = true;
-                    for (String value : condition.getValues()) {
-                        if(!itemCondition.toString().equalsIgnoreCase(value)){
-                            isOption = false;
-                        }
-                    }
-                    
-                    if(isOption){
-                        return false;
-                    }
-                    
-                }else if(condition.getValue()!=null  && !itemCondition.toString().equalsIgnoreCase(condition.getValue())){
-                    return false;
-                }
-                
-            }
-        }
-        return true;
-    }
-
-    private static Object jsonValue(String text, String key, boolean isArray, List<JsonCondition> conditions) throws Exception {
-        try {
-            if (key.contains(".")) {
-
-                text = valueGet(text, key.substring(0, key.indexOf("."))).toString();
-                key = key.substring(key.indexOf(".") + 1);
-
-                if (text.charAt(0) == '[') {
-                    if (conditions != null) {
-                        return arrayGetCondition(text, key, conditions, isArray);
-                    } else {
-                        return arrayGet(text, key, isArray);
-                    }
-
-                } else {
-                    return jsonValue(text, key, false, null);
-                }
-            }
-            return valueGet(text, key);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static Object arrayGet(String text, String key, boolean isArray) throws Exception {
-
-        Object value = null;
-
-        try {
-            JSONArray array = new JSONArray(text);
-            JSONArray newArray = new JSONArray();
-
-            for (int i = 0; i < array.length(); i++) {
-                Object item = jsonGet(array.get(i).toString(), key);
-                if (item != null) {
-                    newArray.put(item);
-                    value = item;
-                    if (!isArray) {
-                        break;
-                    }
-                }
-            }
-            if (isArray) {
-                value = newArray.toString();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error " + e.getMessage());
+            throw e;
         }
         return value;
     }
@@ -230,9 +205,8 @@ public class ValidateJsonQvantel {
                 value = json.get(key);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error " + e.getMessage());
+        } catch (JSONException e) {
+            throw e;
         }
         return value;
     }
