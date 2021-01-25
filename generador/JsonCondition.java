@@ -13,6 +13,12 @@ public class JsonCondition {
     
     private String key;
     private String value;
+    private String[] values;
+    
+    public JsonCondition(String key, String[] values) {
+        this.key = key;
+        this.values = values;
+    }
 
     public JsonCondition(String key, String value) {
         this.key = key;
@@ -40,5 +46,13 @@ public class JsonCondition {
         this.value = value;
     }
     
+    public String[] getValues() {
+        return values;
+    }
+
+    public void setValues(String[] values) {
+        this.values = values;
+    }
+
     
 }

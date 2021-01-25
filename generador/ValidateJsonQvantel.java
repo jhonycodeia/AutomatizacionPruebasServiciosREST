@@ -92,7 +92,7 @@ public class ValidateJsonQvantel {
     public static Object jsonGetCondition(String text, String key, List<JsonCondition> conditions) throws Exception {
         return jsonValue(text, key, false, conditions);
     }
-    
+
     public static Object jsonGetConditions(String text, String key, List<JsonCondition> conditions) throws Exception {
         return jsonValue(text, key, true, conditions);
     }
@@ -127,11 +127,41 @@ public class ValidateJsonQvantel {
         return value;
     }
 
+    private static Object getKeyCondition(String json, String key) {
+        Object item = null;
+        try {
+            item = jsonGet(json, key);
+
+            if (item == null) {
+                return getKeyCondition(json, key.substring(key.indexOf(".") + 1));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return item;
+    }
+
     private static boolean validaCondition(String json, List<JsonCondition> conditions) throws Exception {
         for (JsonCondition condition : conditions) {
-            Object itemCondition = jsonGet(json, condition.getKey());
-            if (itemCondition != null && !itemCondition.toString().equalsIgnoreCase(condition.getValue())) {
-                return false;
+            Object itemCondition = getKeyCondition(json, condition.getKey());
+            if (itemCondition != null) {
+                if(condition.getValues()!=null){
+                    boolean isOption = true;
+                    for (String value : condition.getValues()) {
+                        if(!itemCondition.toString().equalsIgnoreCase(value)){
+                            isOption = false;
+                        }
+                    }
+                    
+                    if(isOption){
+                        return false;
+                    }
+                    
+                }else if(condition.getValue()!=null  && !itemCondition.toString().equalsIgnoreCase(condition.getValue())){
+                    return false;
+                }
+                
             }
         }
         return true;
@@ -146,7 +176,7 @@ public class ValidateJsonQvantel {
 
                 if (text.charAt(0) == '[') {
                     if (conditions != null) {
-                        return arrayGetCondition(text, key, conditions,isArray);
+                        return arrayGetCondition(text, key, conditions, isArray);
                     } else {
                         return arrayGet(text, key, isArray);
                     }
